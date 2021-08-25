@@ -71,6 +71,35 @@ function uppercaseFirstLetter(input) {
 	return firstCharacter.toUpperCase() + input.substr(firstCharacter.length);
 }
 
+const getSubMenuContent = (subMenuLabel, refElementName, child, parent) => {
+	return { 
+			subMenuLabel: uppercaseFirstLetter(subMenuLabel),
+			contents:
+				[
+						{
+							name: `_contextual-insert-{refElementName}--from-template`,
+							label: t("Insert new topic"),
+							icon: "file-o",
+							operationData: {"refElementName": refElementName} ,
+							description: t(`Create a new topic and insert it under ${parent} as ${child}.`)
+						},
+						{
+							name: `_contextual-insert-{refElementName}--to-existing-document`,
+							label: t("Insert existing topic"),
+							icon: "file-text-o",
+							operationData: {"refElementName": refElementName} ,
+							description: t(`Insert an existing topic under ${parent} as ${child}.`)
+						},
+						{
+							name: `_contextual-insert-{elementName}--placeholder-container`,
+							label: t("Insert as placeholder"),
+							operationData: {"elementName": refElementName} ,
+							description: t(`Insert ${child} under ${parent} as a placeholder.`)
+						} 
+				]
+	}
+}
+
 export default function configureSxModule(sxModule) {
 	// abbrevlist
 	//     The <abbrevlist> element references a list of abbreviations. It indicates to the processing software
@@ -214,6 +243,7 @@ export default function configureSxModule(sxModule) {
 							'placeholder'
 						)
 					},
+					getSubMenuContent(bookmapElementLabels.amendments, "amendments", "amendments", "backmatter"),
 					{
 						name: 'contextual-insert-booklists'
 					},
@@ -361,71 +391,21 @@ export default function configureSxModule(sxModule) {
 	//     to reference a <glossarylist>, <indexlist>, and <abbrevlist>. It indicates to the processing
 	//     software that the author wants the lists generated at the <booklists> location. Category: Bookmap
 	//     elements
+
 	configureAsMapSheetFrame(sxModule, 'self::booklists', bookmapElementLabels.booklists, {
 		contextualOperations: [
 			{
 				hideIn: ['context-menu', 'breadcrumbs-menu'],
 				contents: [
-					{
-						subMenuLabel: uppercaseFirstLetter(bookmapElementLabels.abbrevlist),
-						contents: getPlaceholderOrContainerSubMenuOperations(
-							'abbrevlist',
-							'placeholder'
-						)
-					},
-					{
-						subMenuLabel: uppercaseFirstLetter(bookmapElementLabels.bibliolist),
-						contents: getPlaceholderOrContainerSubMenuOperations(
-							'bibliolist',
-							'placeholder'
-						)
-					},
-					{
-						subMenuLabel: uppercaseFirstLetter(bookmapElementLabels.booklist),
-						contents: getPlaceholderOrContainerSubMenuOperations(
-							'booklist',
-							'placeholder'
-						)
-					},
-					{
-						subMenuLabel: uppercaseFirstLetter(bookmapElementLabels.figurelist),
-						contents: getPlaceholderOrContainerSubMenuOperations(
-							'figurelist',
-							'placeholder'
-						)
-					},
-					{
-						subMenuLabel: uppercaseFirstLetter(bookmapElementLabels.glossarylist),
-						contents: getPlaceholderOrContainerSubMenuOperations(
-							'glossarylist',
-							'container'
-						)
-					},
-					{
-						subMenuLabel: uppercaseFirstLetter(bookmapElementLabels.indexlist),
-						contents: getPlaceholderOrContainerSubMenuOperations(
-							'indexlist',
-							'placeholder'
-						)
-					},
-					{
-						subMenuLabel: uppercaseFirstLetter(bookmapElementLabels.tablelist),
-						contents: getPlaceholderOrContainerSubMenuOperations(
-							'tablelist',
-							'placeholder'
-						)
-					},
-					{
-						subMenuLabel: uppercaseFirstLetter(bookmapElementLabels.trademarklist),
-						contents: getPlaceholderOrContainerSubMenuOperations(
-							'trademarklist',
-							'placeholder'
-						)
-					},
-					{
-						subMenuLabel: uppercaseFirstLetter(bookmapElementLabels.toc),
-						contents: getPlaceholderOrContainerSubMenuOperations('toc', 'placeholder')
-					}
+					getSubMenuContent(bookmapElementLabels.abbrevlist, "abbrevlist", "abbreviations list", "book lists"),
+					getSubMenuContent(bookmapElementLabels.bibliolist, "bibliolist", "bibliography list", "book lists"),
+					getSubMenuContent(bookmapElementLabels.booklist,"booklist", "book list", "book lists"),
+					getSubMenuContent(bookmapElementLabels.figurelist, "figurelist", "figure list", "book lists"),
+					getSubMenuContent(bookmapElementLabels.glossarylist,"glossarylist", "glossary list", "book lists"),
+					getSubMenuContent(bookmapElementLabels.indexlist,"indexlist", "index list", "book lists"),
+					getSubMenuContent(bookmapElementLabels.tablelist,"tablelist", "table list", "book lists"),
+					getSubMenuContent(bookmapElementLabels.trademarklist, "trademarklist", "trademark list", "book lists"),
+					getSubMenuContent(bookmapElementLabels.toc, "toc", "table of contents", "book lists"),
 				]
 			},
 			{
